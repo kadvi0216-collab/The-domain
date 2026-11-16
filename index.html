@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7fa">
+  <meta name="description" content="Explore your interests, discover career possibilities, and build a learning plan at your own pace.">
+  <title>Orbit — Learn what could be next</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1e2b3a;
+      --muted: #687789;
+      --purple: #347b83;
+      --purple-dark: #245c69;
+      --lavender: #e7f1f3;
+      --orange: #d99745;
+      --line: #e5eaf0;
+      --paper: #fff;
+      --bg: #f4f7fa;
+      --green: #2fa77c;
+      --radius: 18px;
+      font-family: Inter, ui-rounded, "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body { margin: 0; color: var(--ink); background: var(--bg); font-size: 14px; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #aa96ff; outline-offset: 3px; }
+    button:disabled { cursor: not-allowed; opacity: .65; }
+
+    .top-note {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: #203b50;
+      color: #fff;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: .015em;
+    }
+
+    .top-note span { color: #d6e8ed; }
+    .top-note strong { color: #f4d69e; font-weight: 750; }
+
+    .header {
+      position: sticky;
+      z-index: 5;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      width: min(1190px, calc(100% - 48px));
+      min-height: 68px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1px; }
+    .brand-icon { display: grid; width: 31px; height: 31px; place-items: center; border-radius: 11px; background: var(--purple); color: white; font-size: 18px; transform: rotate(-9deg); }
+    .nav-links { display: flex; align-items: center; gap: 29px; }
+    .nav-links a { color: #686678; text-decoration: none; font-size: 13px; font-weight: 600; }
+    .nav-links a:hover { color: var(--purple); }
+    .icon-button { display: grid; place-items: center; width: 37px; height: 37px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: white; cursor: pointer; }
+    .menu-button { display: none; }
+
+    .page { width: min(1190px, calc(100% - 48px)); margin: 28px auto 64px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 208px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 35px 48px;
+      border-radius: 23px;
+      background: #e8f0f3;
+    }
+
+    .hero-copy { position: relative; z-index: 1; max-width: 575px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 7px; color: var(--purple-dark); font-size: 11px; font-weight: 800; letter-spacing: .095em; text-transform: uppercase; }
+    .spark { color: #f0a52e; font-size: 16px; }
+    h1 { margin: 9px 0 8px; font-size: clamp(29px, 4vw, 42px); line-height: 1.1; letter-spacing: -1.8px; }
+    h1 em { color: var(--purple); font-style: normal; }
+    .hero-copy p { margin: 0; color: #586879; font-size: 14px; line-height: 1.65; }
+    .hero-art { position: absolute; top: 50%; right: 6%; width: 186px; height: 164px; transform: translateY(-50%); }
+    .orbit-ring { position: absolute; top: 11px; left: 21px; width: 142px; height: 142px; border: 1px dashed rgba(112,75,231,.4); border-radius: 50%; transform: rotate(-21deg) scaleY(.65); }
+    .hero-emoji { position: absolute; display: grid; width: 70px; height: 70px; place-items: center; border: 5px solid #fff; border-radius: 23px; background: #ffd98c; font-size: 38px; box-shadow: 0 8px 26px #49347421; transform: rotate(7deg); }
+    .hero-emoji.main { top: 48px; left: 58px; width: 76px; height: 76px; border-radius: 25px; background: #b7ded9; font-size: 41px; transform: rotate(-8deg); }
+    .hero-emoji.one { top: 5px; right: 11px; width: 48px; height: 48px; border-radius: 16px; background: #f4d59e; font-size: 25px; transform: rotate(10deg); }
+    .hero-emoji.two { bottom: 1px; left: 13px; width: 48px; height: 48px; border-radius: 16px; background: #dbe5ed; font-size: 25px; transform: rotate(-12deg); }
+    .hero-emoji.three { right: 2px; bottom: 14px; width: 42px; height: 42px; border-radius: 15px; background: #f2e6be; font-size: 23px; transform: rotate(13deg); }
+    .hero-sparkle { position: absolute; top: 7px; left: 41px; color: #ff9a61; font-size: 20px; }
+
+    .career-section, .chat-section, .paths-section, .plan-section { margin-top: 25px; padding: 27px; border: 1px solid var(--line); border-radius: 20px; background: #fff; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+    .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+    .section-kicker { margin: 0 0 6px; color: var(--purple-dark); font-size: 10px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .section-heading h2 { margin: 0 0 5px; font-size: 21px; letter-spacing: -.65px; }
+    .section-heading p:last-child { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .career-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(230px, .75fr); gap: 20px; }
+    .career-questions { display: grid; gap: 13px; }
+    .career-question { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .career-question legend { margin-bottom: 8px; color: var(--ink); font-size: 12px; font-weight: 730; }
+    .career-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    .career-option { display: flex; min-height: 38px; align-items: center; gap: 7px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; color: #526170; cursor: pointer; font-size: 10px; line-height: 1.4; }
+    .career-option:hover { border-color: #9abfc2; background: #f6fafb; }
+    .career-option input { width: 14px; height: 14px; flex: 0 0 auto; margin: 0; accent-color: var(--purple); }
+    .career-submit { min-height: 38px; justify-self: start; padding: 0 15px; border: 0; border-radius: 10px; background: #245c69; color: white; cursor: pointer; font-size: 11px; font-weight: 750; }
+    .career-submit:hover { background: #184957; }
+    .career-disclaimer { margin: -4px 0 0; color: #858f99; font-size: 10px; line-height: 1.55; }
+    .career-results { min-height: 100%; padding: 18px; border: 1px solid #e0e9ec; border-radius: 15px; background: #f3f7f8; }
+    .career-results[hidden] { display: none; }
+    .career-results h3 { margin: 0 0 7px; font-size: 14px; }
+    .career-results > p { margin: 0 0 13px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .career-result-list { display: grid; gap: 9px; }
+    .career-result-item { padding: 12px; border: 1px solid #e5eaf0; border-radius: 11px; background: white; }
+    .career-result-item strong { display: block; margin-bottom: 4px; font-size: 12px; }
+    .career-result-item > span { display: block; color: #657587; font-size: 10px; line-height: 1.5; }
+    .ai-badge { display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px; border: 1px solid #d5e5e8; border-radius: 8px; background: #eaf3f4; color: #245c69; font-size: 9px; font-weight: 780; letter-spacing: .035em; }
+    .ai-badge span { color: #987321; font-size: 13px; }
+    .ai-note { display: flex; align-items: flex-start; gap: 9px; margin: 0 0 16px; padding: 11px 13px; border: 1px solid #deeaec; border-radius: 11px; background: #f5f9fa; color: #526170; font-size: 10px; line-height: 1.55; }
+    .ai-note strong { color: #245c69; }
+    .ai-note-icon { flex: 0 0 auto; color: #987321; font-size: 16px; }
+    .chat-messages { display: grid; max-height: 360px; gap: 10px; overflow-y: auto; padding: 15px; border: 1px solid #e5eaf0; border-radius: 14px; background: #f7f9fa; scroll-behavior: smooth; }
+    .chat-message { width: min(92%, 650px); padding: 12px 14px; border: 1px solid #e5eaf0; border-radius: 13px; background: white; }
+    .chat-message.user { justify-self: end; border-color: #245c69; background: #245c69; color: white; }
+    .chat-message strong { display: block; margin-bottom: 5px; color: #245c69; font-size: 10px; }
+    .chat-message.user strong { color: #e4f2f3; }
+    .chat-message p { margin: 0; color: #526170; font-size: 11px; line-height: 1.65; white-space: pre-line; overflow-wrap: anywhere; }
+    .chat-message.user p { color: white; }
+    .chat-prompts { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
+    .chat-prompt { min-height: 31px; padding: 0 10px; border: 1px solid #d5e0e4; border-radius: 18px; background: white; color: #415768; cursor: pointer; font-size: 10px; }
+    .chat-prompt:hover { border-color: #9abfc2; background: #f0f6f7; }
+    .chat-form { display: flex; gap: 9px; }
+    .chat-form input { min-width: 0; min-height: 43px; flex: 1; padding: 0 13px; border: 1px solid #dbe3e7; border-radius: 11px; background: white; color: var(--ink); font-size: 12px; }
+    .chat-form button { min-width: 86px; min-height: 43px; padding: 0 14px; border: 0; border-radius: 11px; background: #245c69; color: white; cursor: pointer; font-size: 11px; font-weight: 740; }
+    .chat-form button:hover { background: #184957; }
+    .chat-footnote { margin: 9px 0 0; color: #7a8792; font-size: 9px; line-height: 1.5; }
+    .major-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 7px 0 9px; }
+    .major-tag { padding: 5px 7px; border-radius: 7px; background: #edf3f5; color: #445a68; font-size: 9px; line-height: 1.35; }
+    .match-reason { margin: 8px 0; color: #526170; font-size: 9px; line-height: 1.5; }
+    .match-meter { height: 5px; overflow: hidden; border-radius: 8px; background: #eaf0f2; }
+    .match-meter span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #347b83, #6bb5a8); }
+    .career-path-link { display: inline-block; margin-top: 12px; color: var(--purple-dark); font-size: 10px; font-weight: 740; text-decoration: none; }
+    .career-result-item button, .path-add-button { min-height: 33px; padding: 0 10px; border: 1px solid #d5e0e4; border-radius: 9px; background: white; color: var(--purple-dark); cursor: pointer; font-size: 10px; font-weight: 740; }
+    .career-result-item button:hover, .path-add-button:hover { background: #f0f6f7; }
+    .career-path-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .career-path-card { display: flex; min-width: 0; flex-direction: column; padding: 17px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
+    .career-path-icon { display: grid; width: 42px; height: 42px; margin-bottom: 12px; place-items: center; border-radius: 14px; background: #e7f0f2; font-size: 22px; }
+    .career-path-card:nth-child(3n + 2) .career-path-icon { background: #f3ecdc; }
+    .career-path-card:nth-child(3n) .career-path-icon { background: #e9edf5; }
+    .career-path-card h3 { margin: 0 0 7px; font-size: 13px; }
+    .career-path-card p { margin: 0 0 10px; color: #536171; font-size: 10px; line-height: 1.6; }
+    .career-examples { margin-bottom: 10px !important; color: #687789 !important; }
+    .career-majors-label { margin-bottom: 6px !important; color: #415768 !important; font-weight: 700; }
+    .path-prompt { margin-top: auto !important; padding: 10px; border-radius: 9px; background: #f3f7f8; color: #415768 !important; }
+    .path-add-button { align-self: flex-start; margin-top: 8px; }
+    .plan-summary { margin: 0 0 17px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .plan-progress { height: 7px; overflow: hidden; margin-bottom: 15px; border-radius: 8px; background: #eaf0f2; }
+    .plan-progress-fill { width: 0; height: 100%; border-radius: inherit; background: var(--purple); transition: width .2s ease; }
+    .plan-list { display: grid; gap: 8px; padding: 0; list-style: none; }
+    .plan-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 11px; }
+    .plan-item label { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; }
+    .plan-item input { margin-top: 2px; accent-color: var(--purple); }
+    .plan-item strong, .plan-item span { display: block; font-size: 11px; line-height: 1.55; }
+    .plan-item label span span { color: var(--muted); font-size: 10px; }
+    .plan-item.completed strong { color: #74818b; text-decoration: line-through; }
+    .plan-remove { padding: 5px 7px; border: 0; border-radius: 7px; background: #f2f5f6; color: #586a7b; cursor: pointer; font-size: 10px; }
+    .plan-empty { padding: 20px; border: 1px dashed #dbe3e7; border-radius: 12px; color: #687789; font-size: 11px; text-align: center; }
+    .plan-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+    .plan-action { min-height: 34px; padding: 0 11px; border: 1px solid #d5e0e4; border-radius: 9px; background: white; color: var(--purple-dark); cursor: pointer; font-size: 10px; font-weight: 720; }
+    .plan-action.primary { border-color: #245c69; background: #245c69; color: white; }
+    .plan-action:disabled { cursor: not-allowed; opacity: .5; }
+    .demo-note { flex: 0 0 auto; padding: 6px 9px; border-radius: 8px; background: #f0f4f6; color: #657587; font-size: 9px; font-weight: 700; }
+
+    .footer { margin-top: 25px; color: #93909d; font-size: 10px; text-align: center; }
+
+    .toast { position: fixed; z-index: 10; right: 22px; bottom: 22px; max-width: min(360px, calc(100vw - 32px)); padding: 13px 17px; border-radius: 13px; background: #302748; color: white; box-shadow: 0 10px 30px #21163538; font-size: 12px; line-height: 1.5; opacity: 0; pointer-events: none; transform: translateY(9px); transition: opacity .2s, transform .2s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .mobile-scrim { display: none; }
+
+    @media print {
+      .top-note, .header, .hero-art, .career-submit, .chat-prompts, .chat-form, .plan-actions, .plan-remove, .path-add-button, .career-result-item button, .toast { display: none !important; }
+      body { background: white; }
+      .page { width: 100%; margin: 0; }
+      .career-section, .chat-section, .paths-section, .plan-section { break-inside: avoid; border-color: #cbd5dc; }
+    }
+
+    @media (max-width: 820px) {
+      .page, .nav { width: min(100% - 36px, 740px); }
+      .hero { padding: 32px; }
+      .hero-art { right: 3%; transform: translateY(-50%) scale(.82); }
+      .career-layout { grid-template-columns: 1fr; }
+      .career-results { min-height: auto; }
+      .career-path-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .top-note { font-size: 10px; }
+      .nav { width: calc(100% - 32px); min-height: 60px; }
+      .menu-button { display: grid; }
+      .nav-links { position: fixed; z-index: 8; top: 0; bottom: 0; left: 0; width: min(290px, 82vw); align-items: stretch; flex-direction: column; gap: 0; padding: 75px 22px 22px; background: #fff; box-shadow: 12px 0 35px #21163520; transform: translateX(-110%); transition: transform .2s ease; }
+      .nav-links.open { transform: translateX(0); }
+      .nav-links a { padding: 16px 5px; border-bottom: 1px solid var(--line); }
+      .mobile-scrim.visible { position: fixed; z-index: 7; inset: 0; display: block; background: #20192f66; }
+      .page { width: calc(100% - 28px); margin-top: 17px; }
+      .hero { min-height: 184px; align-items: flex-start; padding: 25px 22px; border-radius: 19px; }
+      .hero-copy { max-width: 75%; }
+      .hero-copy p { max-width: 290px; font-size: 12px; }
+      h1 { font-size: clamp(27px, 7vw, 35px); }
+      .hero-art { top: auto; right: -27px; bottom: -19px; transform: scale(.62); transform-origin: bottom right; }
+      .career-section, .chat-section, .paths-section, .plan-section { padding: 19px; }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+      .section-heading h2 { font-size: 19px; }
+      .career-path-grid { grid-template-columns: 1fr; }
+      .chat-messages { max-height: 320px; padding: 10px; }
+      .chat-message { width: 96%; }
+      .chat-form button { min-width: 72px; }
+    }
+
+    @media (max-width: 370px) {
+      .hero-copy { max-width: 83%; }
+      .career-options { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-note"><span>✦</span><strong>Your curiosity. Your pace. Your next step.</strong><span>Explore entirely on your own.</span></div>
+  <header class="header">
+    <nav class="nav" aria-label="Main navigation">
+      <button class="icon-button menu-button" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+      <a class="brand" href="#" aria-label="Orbit home"><span class="brand-icon" aria-hidden="true">✳</span>orbit</a>
+      <div class="mobile-scrim" id="mobileScrim"></div>
+      <div class="nav-links" id="navLinks">
+        <a href="#career-test">Career check-in</a>
+        <a href="#career-chat">Ask the AI guide</a>
+        <a href="#career-paths">Explore career paths</a>
+        <a href="#learning-plan">My learning plan</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="spark">✦</span> student learning &amp; career exploration</div>
+        <h1 id="heroTitle">Curiosity leads to <em>what’s next.</em></h1>
+        <p>Explore what interests you, discover careers you may not have considered, and build a learning plan that works for you—on your own schedule.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit-ring"></div>
+        <span class="hero-sparkle">✧</span>
+        <span class="hero-emoji main">📚</span>
+        <span class="hero-emoji one">🔬</span>
+        <span class="hero-emoji two">💡</span>
+        <span class="hero-emoji three">✦</span>
+      </div>
+    </section>
+
+    <section class="career-section" id="career-test" aria-labelledby="careerTitle">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">A quick curiosity check · about 2 minutes</p>
+          <h2 id="careerTitle">What kinds of questions get you thinking?</h2>
+          <p>Choose what sounds most interesting. Your answers help build a personalized shortlist of college majors to explore.</p>
+        </div>
+        <span class="ai-badge"><span aria-hidden="true">✧</span> AI-INSPIRED MATCH</span>
+      </div>
+      <p class="ai-note"><span class="ai-note-icon" aria-hidden="true">✧</span><span><strong>Personalized, private recommendations.</strong> The quiz finds patterns in your choices and ranks related majors instantly in your browser. This demo uses transparent matching logic—not an external AI service—and never sends or saves your answers.</span></p>
+      <div class="career-layout">
+        <form class="career-questions" id="careerForm">
+          <fieldset class="career-question">
+            <legend>1. Pick a project for a free afternoon:</legend>
+            <div class="career-options">
+              <label class="career-option"><input type="radio" name="q1" value="creative" required> Create an illustration or short film</label>
+              <label class="career-option"><input type="radio" name="q1" value="technology"> Build a game, robot, or website</label>
+              <label class="career-option"><input type="radio" name="q1" value="helping"> Plan an activity that helps others</label>
+              <label class="career-option"><input type="radio" name="q1" value="research"> Investigate a big science question</label>
+              <label class="career-option"><input type="radio" name="q1" value="environment"> Explore ways to protect local nature</label>
+            </div>
+          </fieldset>
+          <fieldset class="career-question">
+            <legend>2. Which challenge would you choose?</legend>
+            <div class="career-options">
+              <label class="career-option"><input type="radio" name="q2" value="creative" required> Tell a story that makes people think</label>
+              <label class="career-option"><input type="radio" name="q2" value="technology"> Figure out how a tricky system works</label>
+              <label class="career-option"><input type="radio" name="q2" value="helping"> Create a clear guide to a new skill</label>
+              <label class="career-option"><input type="radio" name="q2" value="research"> Find evidence to answer a mystery</label>
+              <label class="career-option"><input type="radio" name="q2" value="environment"> Improve a park, garden, or habitat</label>
+            </div>
+          </fieldset>
+          <fieldset class="career-question">
+            <legend>3. When exploring a new idea, what do you enjoy most?</legend>
+            <div class="career-options">
+              <label class="career-option"><input type="radio" name="q3" value="creative" required> Coming up with fresh ideas</label>
+              <label class="career-option"><input type="radio" name="q3" value="technology"> Testing and improving a design</label>
+              <label class="career-option"><input type="radio" name="q3" value="helping"> Listening and bringing people together</label>
+              <label class="career-option"><input type="radio" name="q3" value="research"> Asking questions and checking details</label>
+              <label class="career-option"><input type="radio" name="q3" value="environment"> Noticing how people affect the planet</label>
+            </div>
+          </fieldset>
+          <fieldset class="career-question">
+            <legend>4. Which subject would you explore just for fun?</legend>
+            <div class="career-options">
+              <label class="career-option"><input type="radio" name="q4" value="creative" required> Art, design, or creative writing</label>
+              <label class="career-option"><input type="radio" name="q4" value="technology"> Computing, engineering, or math</label>
+              <label class="career-option"><input type="radio" name="q4" value="helping"> How people learn, think, or stay healthy</label>
+              <label class="career-option"><input type="radio" name="q4" value="research"> Space, biology, or how things work</label>
+              <label class="career-option"><input type="radio" name="q4" value="environment"> Animals, climate, or the outdoors</label>
+            </div>
+          </fieldset>
+          <button class="career-submit" type="submit">Explore my results →</button>
+          <p class="career-disclaimer">This reflection tool suggests topics to explore—it does not measure ability, predict your future, or decide what you should become.</p>
+        </form>
+        <section class="career-results" id="careerResults" aria-live="polite" hidden>
+          <h3>Your personalized major matches</h3>
+          <p>Ranked from your answers. Each match explains its fit and lists specific majors to explore—these are ideas, not a verdict.</p>
+          <div class="career-result-list" id="careerResultList"></div>
+          <a class="career-path-link" href="#career-paths">Explore related career paths ↓</a>
+        </section>
+      </div>
+    </section>
+
+    <section class="chat-section" id="career-chat" aria-labelledby="chatTitle">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Ask follow-up questions · explore at your pace</p>
+          <h2 id="chatTitle">Chat with your AI career guide</h2>
+          <p>Ask about college majors, career directions, or a small project to try on your own.</p>
+        </div>
+        <span class="ai-badge"><span aria-hidden="true">✧</span> AI CHAT PREVIEW</span>
+      </div>
+      <p class="ai-note"><span class="ai-note-icon" aria-hidden="true">✧</span><span><strong>Private local demo.</strong> Replies are generated from the career guides in this page—not a connected AI model. Your messages stay in this tab, are not saved, and are not sent anywhere. Please don’t include personal information.</span></p>
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-relevant="additions">
+        <article class="chat-message assistant">
+          <strong>Orbit · career guide</strong>
+          <p>Hi! Tell me what you’re curious about, and I’ll suggest related college majors and a project you can explore on your own.</p>
+        </article>
+      </div>
+      <div class="chat-prompts" aria-label="Try asking">
+        <button class="chat-prompt" type="button" data-prompt="What college majors involve artificial intelligence and robotics?">AI &amp; robotics majors</button>
+        <button class="chat-prompt" type="button" data-prompt="I like art and storytelling. What should I explore?">I like art &amp; stories</button>
+        <button class="chat-prompt" type="button" data-prompt="Suggest a science project I can do independently.">A solo science project</button>
+      </div>
+      <form class="chat-form" id="chatForm">
+        <label for="chatInput" class="visually-hidden">Ask a career question</label>
+        <input id="chatInput" name="question" type="text" maxlength="280" placeholder="Ask about majors, careers, or projects..." autocomplete="off" required>
+        <button type="submit">Ask <span aria-hidden="true">↑</span></button>
+      </form>
+      <p class="chat-footnote">For exploring ideas only—not college admissions, financial, or career counseling advice.</p>
+    </section>
+
+    <section class="paths-section" id="career-paths" aria-labelledby="pathsTitle">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Explore independently · follow your curiosity</p>
+          <h2 id="pathsTitle">Career paths to explore</h2>
+          <p>Browse a few fields, see what people in those careers do, and choose a small activity to try by yourself.</p>
+        </div>
+        <span class="demo-note">No messages · no profile · just you</span>
+      </div>
+      <div class="career-path-grid" id="careerPathGrid"></div>
+    </section>
+
+    <section class="plan-section" id="learning-plan" aria-labelledby="planTitle">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Your ideas · your own pace</p>
+          <h2 id="planTitle">My independent learning plan</h2>
+          <p>Save activities that interest you, check them off as you go, and print or save your plan when you’re done. Your choices stay on this page until you close or refresh it.</p>
+        </div>
+        <span class="demo-note">Private · no account · nothing shared</span>
+      </div>
+      <p class="plan-summary" id="planProgressText">Choose a career path activity to get started. Your plan is private and is not shared.</p>
+      <div class="plan-progress" id="planProgress" role="progressbar" aria-label="Learning plan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="plan-progress-fill" id="planProgressFill"></div>
+      </div>
+      <ul class="plan-list" id="planList" aria-live="polite"></ul>
+      <div class="plan-actions">
+        <button class="plan-action primary" id="printPlan" type="button" disabled>Print / save my plan</button>
+        <button class="plan-action" id="clearPlan" type="button" disabled>Clear plan</button>
+      </div>
+    </section>
+
+    <footer class="footer">Keep asking questions. Your next step is yours to choose. <span aria-hidden="true">✦</span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const careerDirections = [
+      { id: "creative", title: "Design & communication", icon: "🎨", description: "Turn ideas into visuals, stories, media, or experiences.", examples: "Graphic designer · Writer · Animator", majors: ["B.F.A. Graphic Design", "B.A. Digital Media", "B.A. Communication & Media"], keywords: ["art", "design", "creative", "writing", "writer", "story", "stories", "storytelling", "media", "graphic", "animation", "film", "illustration"], activity: "Choose a topic you like and create a one-page illustrated explainer." },
+      { id: "technology", title: "Technology & engineering", icon: "⚙️", description: "Build, test, and improve tools, systems, and technology.", examples: "Software developer · Robotics engineer · Game designer", majors: ["B.S. Computer Science (AI)", "B.S. Robotics Engineering", "B.S. Computer Engineering"], keywords: ["technology", "tech", "code", "coding", "computer", "computers", "engineering", "engineer", "robot", "robotics", "game", "software", "artificial", "intelligence", "ai", "math"], activity: "Sketch an invention that solves a small everyday problem." },
+      { id: "helping", title: "Education & health", icon: "🧠", description: "Explore how people learn, think, stay healthy, and grow.", examples: "Teacher · Pediatric nurse · Learning researcher", majors: ["B.S. Nursing (Pediatrics)", "B.A./B.S. Psychology", "B.S. Education (Learning Sciences)"], keywords: ["education", "teacher", "teaching", "learning", "health", "nurse", "nursing", "psychology", "pediatric", "people", "helping"], activity: "Make a simple guide that explains a skill you recently learned." },
+      { id: "research", title: "Science & discovery", icon: "🔭", description: "Ask questions, examine evidence, and find out how things work.", examples: "Biologist · Astronomer · Lab scientist", majors: ["B.S. Astrophysics", "B.S. Molecular Biology", "B.S. Chemistry (Biochemistry)"], keywords: ["science", "research", "biology", "biologist", "astronomy", "astronomer", "space", "chemistry", "lab", "discovery", "experiment"], activity: "Write down a science question, then find two reliable sources about it." },
+      { id: "environment", title: "Environment & sustainability", icon: "🌿", description: "Study the natural world and think up ways to care for it.", examples: "Ecologist · Conservation scientist · Climate researcher", majors: ["B.S. Environmental Science", "B.S. Ecology", "B.S. Environmental Engineering"], keywords: ["environment", "ecology", "ecologist", "climate", "sustainability", "nature", "animal", "animals", "conservation", "ecosystem", "planet", "wildlife"], activity: "Observe a nearby plant or habitat and record three things you notice." }
+    ];
+
+    const learningPlan = [];
+    const planList = document.getElementById("planList");
+    const toast = document.getElementById("toast");
+    let toastTimer;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    function getCareerChatReply(question) {
+      const words = question.toLowerCase().match(/[a-z0-9]+/g) || [];
+      const matches = careerDirections
+        .map((direction, index) => ({
+          direction,
+          index,
+          score: direction.keywords.reduce((total, keyword) => total + Number(words.includes(keyword)), 0)
+        }))
+        .filter((match) => match.score > 0)
+        .sort((a, b) => b.score - a.score || a.index - b.index)
+        .slice(0, 2);
+
+      if (!matches.length) {
+        return "I can help you explore design and media, technology and AI, education and health, science, or the environment. Tell me a subject or activity you enjoy, and I’ll suggest related college majors and a solo project.";
+      }
+
+      const suggestions = matches.map(({ direction }) =>
+        `${direction.title}\nCollege majors: ${direction.majors.join("; ")}\nTry on your own: ${direction.activity}`
+      );
+      return `Based on the interests in your question, these areas could be worth exploring:\n\n${suggestions.join("\n\n")}\n\nThese are brainstorming ideas, not a prediction or a limit on what you can study.`;
+    }
+
+    function appendChatMessage(role, text) {
+      const message = document.createElement("article");
+      message.className = `chat-message ${role}`;
+
+      const label = document.createElement("strong");
+      label.textContent = role === "user" ? "You" : "Orbit · career guide";
+      const content = document.createElement("p");
+      content.textContent = text;
+
+      message.append(label, content);
+      chatMessages.append(message);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    const chatMessages = document.getElementById("chatMessages");
+    const chatInput = document.getElementById("chatInput");
+    document.getElementById("chatForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const question = chatInput.value.trim();
+      if (!question) return;
+
+      appendChatMessage("user", question);
+      chatInput.value = "";
+      appendChatMessage("assistant", getCareerChatReply(question));
+    });
+
+    document.querySelectorAll(".chat-prompt").forEach((button) => {
+      button.addEventListener("click", () => {
+        chatInput.value = button.dataset.prompt;
+        chatInput.focus();
+      });
+    });
+
+    function renderCareerPaths() {
+      const careerPathGrid = document.getElementById("careerPathGrid");
+      careerPathGrid.innerHTML = careerDirections.map((direction) =>
+        `<article class="career-path-card">
+          <div class="career-path-icon" aria-hidden="true">${direction.icon}</div>
+          <h3>${direction.title}</h3>
+          <p>${direction.description}</p>
+          <p class="career-examples"><strong>Possible careers:</strong> ${direction.examples}</p>
+          <p class="career-majors-label">College majors to explore:</p>
+          <div class="major-tags">${direction.majors.map((major) => `<span class="major-tag">${major}</span>`).join("")}</div>
+          <p class="path-prompt"><strong>Try on your own:</strong> ${direction.activity}</p>
+          <button class="path-add-button" data-path="${direction.id}">Add activity to my plan</button>
+        </article>`
+      ).join("");
+
+      careerPathGrid.querySelectorAll(".path-add-button").forEach((button) => {
+        button.addEventListener("click", () => addToPlan(button.dataset.path));
+      });
+    }
+
+    function renderLearningPlan() {
+      const completed = learningPlan.filter((item) => item.done).length;
+      const total = learningPlan.length;
+      const progress = total ? Math.round((completed / total) * 100) : 0;
+      const progressText = document.getElementById("planProgressText");
+
+      progressText.textContent = total
+        ? `${completed} of ${total} activities completed. Your plan is private and is not shared.`
+        : "Choose a career path activity to get started. Your plan is private and is not shared.";
+
+      document.getElementById("planProgress").setAttribute("aria-valuenow", String(progress));
+      document.getElementById("planProgressFill").style.width = `${progress}%`;
+      document.getElementById("printPlan").disabled = total === 0;
+      document.getElementById("clearPlan").disabled = total === 0;
+
+      if (!total) {
+        planList.innerHTML = '<li class="plan-empty">Your plan is empty for now. Browse a career path above and add an activity you want to try.</li>';
+        return;
+      }
+
+      planList.innerHTML = learningPlan.map((item, index) => {
+        const direction = careerDirections.find((path) => path.id === item.id);
+        if (!direction) return "";
+        return `<li class="plan-item${item.done ? " completed" : ""}">
+          <label>
+            <input class="plan-complete" type="checkbox" data-index="${index}" ${item.done ? "checked" : ""}>
+            <span><strong>${direction.title}</strong><span>${direction.activity}</span></span>
+          </label>
+          <button class="plan-remove" data-index="${index}" aria-label="Remove ${direction.title} activity">Remove</button>
+        </li>`;
+      }).join("");
+
+      planList.querySelectorAll(".plan-complete").forEach((checkbox) => {
+        checkbox.addEventListener("change", () => {
+          const item = learningPlan[Number(checkbox.dataset.index)];
+          if (!item) return;
+          item.done = checkbox.checked;
+          renderLearningPlan();
+        });
+      });
+
+      planList.querySelectorAll(".plan-remove").forEach((button) => {
+        button.addEventListener("click", () => {
+          learningPlan.splice(Number(button.dataset.index), 1);
+          renderLearningPlan();
+        });
+      });
+    }
+
+    function addToPlan(id) {
+      const direction = careerDirections.find((path) => path.id === id);
+      if (!direction) return;
+      if (learningPlan.some((item) => item.id === id)) {
+        showToast("That activity is already in your plan. Pick another path or check off the one you have.");
+        return;
+      }
+      learningPlan.push({ id, done: false });
+      renderLearningPlan();
+      showToast(`${direction.title} activity added to your personal plan.`);
+    }
+
+    document.getElementById("careerForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const answers = new FormData(event.currentTarget);
+      const selectedInterests = [...answers.values()];
+      const scores = new Map(careerDirections.map((direction) => [direction.id, 0]));
+      for (const answer of selectedInterests) {
+        if (scores.has(answer)) scores.set(answer, scores.get(answer) + 1);
+      }
+
+      const recommendations = careerDirections
+        .map((direction, index) => ({ ...direction, score: scores.get(direction.id), index }))
+        .filter((direction) => direction.score > 0)
+        .sort((a, b) => b.score - a.score || a.index - b.index)
+        .slice(0, 3);
+
+      const resultList = document.getElementById("careerResultList");
+      resultList.innerHTML = recommendations.map((direction) =>
+        `<article class="career-result-item">
+          <strong>${direction.title}</strong>
+          <span>${direction.description}</span>
+          <p class="match-reason">You picked this interest in ${direction.score} of ${selectedInterests.length} answers.</p>
+          <div class="match-meter" role="img" aria-label="${direction.score} of ${selectedInterests.length} answers match this direction">
+            <span style="width: ${Math.round((direction.score / selectedInterests.length) * 100)}%"></span>
+          </div>
+          <div class="major-tags" aria-label="Suggested college majors">${direction.majors.map((major) => `<span class="major-tag">${major}</span>`).join("")}</div>
+          <span><b>Try on your own:</b> ${direction.activity}</span>
+          <button class="plan-add-button" data-path="${direction.id}">Add to my plan</button>
+        </article>`
+      ).join("");
+      document.getElementById("careerResults").hidden = false;
+      resultList.querySelectorAll(".plan-add-button").forEach((button) => {
+        button.addEventListener("click", () => addToPlan(button.dataset.path));
+      });
+    });
+
+    document.getElementById("clearPlan").addEventListener("click", () => {
+      learningPlan.length = 0;
+      renderLearningPlan();
+      showToast("Your learning plan has been cleared.");
+    });
+
+    document.getElementById("printPlan").addEventListener("click", () => window.print());
+
+    const navLinks = document.getElementById("navLinks");
+    const menuToggle = document.getElementById("menuToggle");
+    const mobileScrim = document.getElementById("mobileScrim");
+
+    function closeMenu() {
+      navLinks.classList.remove("open");
+      mobileScrim.classList.remove("visible");
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Open navigation menu");
+    }
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("open");
+      mobileScrim.classList.toggle("visible", isOpen);
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      menuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
+    });
+    mobileScrim.addEventListener("click", closeMenu);
+    navLinks.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+
+    renderCareerPaths();
+    renderLearningPlan();
+  </script>
+</body>
+</html>
